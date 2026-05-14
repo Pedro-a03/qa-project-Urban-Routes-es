@@ -1,4 +1,3 @@
-import time
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
@@ -109,6 +108,84 @@ class UrbanRoutesPage:
         )
         self.driver.find_element(*self.message_field).send_keys(message)
 
+    def set_card_number(self, card_number):
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.visibility_of_element_located(self.card_number_input)
+        )
+        field = self.driver.find_element(*self.card_number_input)
+        field.click()
+        field.clear()
+        for char in card_number:
+            ActionChains(self.driver).send_keys(char).perform()
+
+    def set_card_code(self, card_code):
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.visibility_of_element_located(self.card_code_input)
+        )
+        field = self.driver.find_element(*self.card_code_input)
+        field.click()
+        field.clear()
+        for char in card_code:
+            ActionChains(self.driver).send_keys(char).perform()
+        ActionChains(self.driver).send_keys(Keys.TAB).perform()
+
+    def click_add_card_submit(self):
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.presence_of_element_located(self.add_card_submit_button)
+        )
+        self.driver.execute_script(
+            "document.querySelectorAll('button.button.full')[3].click();"
+        )
+
+    def click_payment_method_button(self):
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.element_to_be_clickable(self.payment_method_button)
+        )
+        self.driver.find_element(*self.payment_method_button).click()
+
+    def click_add_card_button(self):
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.element_to_be_clickable(self.add_card_button)
+        )
+        self.driver.find_element(*self.add_card_button).click()
+
+    def add_credit_card(self, card_number, card_code):
+        self.click_payment_method_button()
+        self.click_add_card_button()
+        self.set_card_number(card_number)
+        self.set_card_code(card_code)
+        self.click_add_card_submit()
+        WebDriverWait(self.driver, 30).until(
+            expected_conditions.presence_of_element_located(self.card_added_label)
+        )
+
+    def close_phone_modal(self):
+        modals = self.driver.find_elements(By.CSS_SELECTOR, '.modal')
+        if modals and modals[0].is_displayed():
+            close_button = WebDriverWait(self.driver, 5).until(
+                expected_conditions.element_to_be_clickable(self.close_phone_modal_button)
+            )
+            close_button.click()
+            WebDriverWait(self.driver, 5).until(
+                expected_conditions.invisibility_of_element_located((By.CSS_SELECTOR, '.modal'))
+            )
+
+    def wait_for_overlays_to_disappear(self):
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.invisibility_of_element_located(self.overlay)
+        )
+
+    def click_with_js(self, locator):
+        element = self.driver.find_element(*locator)
+        self.driver.execute_script("arguments[0].click();", element)
+
+    def click_blanket_and_tissues_switch(self):
+        self.wait_for_overlays_to_disappear()
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.element_to_be_clickable(self.blanket_and_tissues_switch)
+        )
+        self.click_with_js(self.blanket_and_tissues_switch)
+
     def order_two_ice_creams(self):
         self.wait_for_overlays_to_disappear()
         WebDriverWait(self.driver, 10).until(
@@ -124,91 +201,13 @@ class UrbanRoutesPage:
         )
         self.click_with_js(self.order_taxi_button)
 
-    def click_payment_method_button(self):
-        WebDriverWait(self.driver, 10).until(
-            expected_conditions.element_to_be_clickable(self.payment_method_button)
-        )
-        self.driver.find_element(*self.payment_method_button).click()
-
-    def click_add_card_button(self):
-        WebDriverWait(self.driver, 10).until(
-            expected_conditions.element_to_be_clickable(self.add_card_button)
-        )
-        self.driver.find_element(*self.add_card_button).click()
-
-    def set_card_number(self, card_number):
-        WebDriverWait(self.driver, 10).until(
-            expected_conditions.visibility_of_element_located(self.card_number_input)
-        )
-        field = self.driver.find_element(*self.card_number_input)
-        field.click()
-        field.clear()
-        for char in card_number:
-            ActionChains(self.driver).send_keys(char).perform()
-            time.sleep(0.1)
-
-    def set_card_code(self, card_code):
-        WebDriverWait(self.driver, 10).until(
-            expected_conditions.visibility_of_element_located(self.card_code_input)
-        )
-        field = self.driver.find_element(*self.card_code_input)
-        field.click()
-        field.clear()
-        for char in card_code:
-            ActionChains(self.driver).send_keys(char).perform()
-            time.sleep(0.1)
-        ActionChains(self.driver).send_keys(Keys.TAB).perform()
-
-    def click_add_card_submit(self):
-        time.sleep(3)
+    def close_payment_modal(self):
         self.driver.execute_script(
-            "document.querySelectorAll('button.button.full')[3].click();"
+            "document.querySelector('.modal .section.active button.close-button').click();"
         )
-
-    def add_credit_card(self, card_number, card_code):
-        self.click_payment_method_button()
-        self.click_add_card_button()
-        self.set_card_number(card_number)
-        self.set_card_code(card_code)
-        self.click_add_card_submit()
-        WebDriverWait(self.driver, 30).until(
-            expected_conditions.presence_of_element_located(self.card_added_label)
+        WebDriverWait(self.driver, 5).until(
+            expected_conditions.invisibility_of_element_located((By.CSS_SELECTOR, '.modal'))
         )
-
-    def close_phone_modal(self):
-        try:
-            WebDriverWait(self.driver, 5).until(
-                expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, '.modal'))
-            )
-            close_button = WebDriverWait(self.driver, 5).until(
-                expected_conditions.element_to_be_clickable(self.close_phone_modal_button)
-            )
-            close_button.click()
-            WebDriverWait(self.driver, 5).until(
-                expected_conditions.invisibility_of_element_located((By.CSS_SELECTOR, '.modal'))
-            )
-        except Exception:
-            pass
-
-    def wait_for_overlays_to_disappear(self):
-        try:
-            WebDriverWait(self.driver, 10).until(
-                expected_conditions.invisibility_of_element_located(self.overlay)
-            )
-        except Exception:
-            pass
-        time.sleep(1)
-
-    def click_with_js(self, locator):
-        element = self.driver.find_element(*locator)
-        self.driver.execute_script("arguments[0].click();", element)
-
-    def click_blanket_and_tissues_switch(self):
-        self.wait_for_overlays_to_disappear()
-        WebDriverWait(self.driver, 10).until(
-            expected_conditions.element_to_be_clickable(self.blanket_and_tissues_switch)
-        )
-        self.click_with_js(self.blanket_and_tissues_switch)
 
     # --- Métodos getter / checker para asserts ---
 
@@ -250,16 +249,4 @@ class UrbanRoutesPage:
     def is_card_added(self):
         elements = self.driver.find_elements(*self.card_added_label)
         return len(elements) > 0
-
-    def close_payment_modal(self):
-        try:
-            self.driver.execute_script(
-                "document.querySelector('.modal .section.active button.close-button').click();"
-            )
-            WebDriverWait(self.driver, 5).until(
-                expected_conditions.invisibility_of_element_located((By.CSS_SELECTOR, '.modal'))
-            )
-        except Exception:
-            pass
-
 

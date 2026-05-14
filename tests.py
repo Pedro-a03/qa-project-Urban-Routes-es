@@ -14,7 +14,7 @@ class TestUrbanRoutes:
 
     @classmethod
     def setup_class(cls):
-        # Modificado por compatibilidad con Selenium 4.x y Chrome 147 (aprobado por Dot Tripleten)
+        # Modificado por compatibilidad con Selenium 4.x y Chrome 147 (aprobado por IA Tripleten)
         # Usando set_capability para goog:loggingPrefs (capacidad W3C estándar)
         # en lugar de add_experimental_option para compatibilidad con Selenium 4.x
         # Mantiene la habilitación de logs de performance necesaria para retrieve_phone_code()
@@ -66,7 +66,7 @@ class TestUrbanRoutes:
     # Test 7 — Acción 7: Pedir 2 helados
     def test_order_two_ice_creams(self):
         self.routes_page.order_two_ice_creams()
-        assert self.routes_page.get_ice_cream_count() == '2'
+        assert self.routes_page.get_ice_cream_count() == data.ice_cream_count
 
     # Test 8 — Acción 8: Hacer clic en el botón de pedir taxi
     def test_click_order_taxi_button(self):
@@ -84,3 +84,4 @@ class TestUrbanRoutes:
     @classmethod
     def teardown_class(cls):
         cls.driver.quit()
+
