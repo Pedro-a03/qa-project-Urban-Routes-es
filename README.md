@@ -90,6 +90,36 @@ This project applies the following QA automation techniques:
    ```
 > ⚠️ Tests are sequential and depend on shared browser state. Always run the full suite with `pytest tests.py`, not individual tests.
 
+---
+
+## 📸 Execution Evidence
+
+Visual proof of successful test execution and project structure.
+
+### ✅ Test Suite Execution — 9/9 Tests Passed
+
+![Tests Passed](evidence/01-tests-passed.png)
+
+*All 9 sequential test cases passed in a single browser session (17.61 seconds total runtime) using Selenium 4.45 with Chrome 149.*
+
+### 🚖 Browser Automation in Action
+
+![Browser Execution](evidence/02-browser-execution.png)
+
+*Selenium WebDriver controlling Google Chrome during automated flow execution on the Urban Routes web application.*
+
+### 📁 Page Object Model Structure
+
+![POM Structure](evidence/03-pom-structure.png)
+
+*Project organization following the Page Object Model pattern with clear separation of concerns across `helpers.py`, `pages.py`, and `tests.py`.*
+
+### 🎯 Locator Strategy Implementation
+
+![Locators](evidence/04-locators-pom.png)
+
+*Class `UrbanRoutesPage` demonstrating the 4 locator strategies used across the project: `By.ID`, `By.CLASS_NAME`, `By.XPATH`, and `By.CSS_SELECTOR`.*
+
 ## 👤 Author
 
 **Pedro Acosta**
